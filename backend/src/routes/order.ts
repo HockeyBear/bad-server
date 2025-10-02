@@ -11,11 +11,12 @@ import {
 import auth, { roleGuardMiddleware } from '../middlewares/auth'
 import { validateOrderBody } from '../middlewares/validations'
 import { Role } from '../models/user'
+import { scrfProtection } from '../middlewares/csrfProtect'
 
 const orderRouter = Router()
 
 orderRouter.post('/', auth, validateOrderBody, createOrder)
-orderRouter.get('/all', auth, getOrders)
+orderRouter.get('/all', auth, getOrders, roleGuardMiddleware(Role.Admin))
 orderRouter.get('/all/me', auth, getOrdersCurrentUser)
 orderRouter.get(
     '/:orderNumber',
@@ -28,7 +29,8 @@ orderRouter.patch(
     '/:orderNumber',
     auth,
     roleGuardMiddleware(Role.Admin),
-    updateOrder
+    updateOrder,
+    scrfProtection
 )
 
 orderRouter.delete('/:id', auth, roleGuardMiddleware(Role.Admin), deleteOrder)

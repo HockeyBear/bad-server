@@ -9,6 +9,7 @@ import ConflictError from '../errors/conflict-error'
 import NotFoundError from '../errors/not-found-error'
 import UnauthorizedError from '../errors/unauthorized-error'
 import User from '../models/user'
+import { generateCsrfToken } from '../utils/generateCsrfToken'
 
 // POST /auth/login
 const login = async (req: Request, res: Response, next: NextFunction) => {
@@ -22,6 +23,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
             refreshToken,
             REFRESH_TOKEN.cookie.options
         )
+        res.cookie('csrfToken', generateCsrfToken)
         return res.json({
             success: true,
             user,
@@ -46,6 +48,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
             refreshToken,
             REFRESH_TOKEN.cookie.options
         )
+        res.cookie('csrfToken', generateCsrfToken)
         return res.status(constants.HTTP_STATUS_CREATED).json({
             success: true,
             user: newUser,

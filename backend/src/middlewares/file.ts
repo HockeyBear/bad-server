@@ -31,7 +31,7 @@ const storage = multer.diskStorage({
     },
 })
 
-const types = [
+export const typeFiles = [
     'image/png',
     'image/jpg',
     'image/jpeg',
@@ -44,7 +44,7 @@ const fileFilter = (
     file: Express.Multer.File,
     cb: FileFilterCallback
 ) => {
-    if (!types.includes(file.mimetype)) {
+    if (!typeFiles.includes(file.mimetype)) {
         return cb(null, false)
     }
 

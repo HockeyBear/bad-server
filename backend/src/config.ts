@@ -1,5 +1,13 @@
-import { CookieOptions } from 'express'
+import { CookieOptions, Request as ExpressRequest } from 'express'
 import ms from 'ms'
+import { DoubleCsrfConfigOptions } from 'csrf-csrf'
+import rateLimit from 'express-rate-limit'
+
+export interface AuthRequest extends ExpressRequest {
+    user?: {
+        _id?: string
+    }
+}
 
 export const { PORT = '3000' } = process.env
 export const { DB_ADDRESS = 'mongodb://127.0.0.1:27017/weblarek' } = process.env
@@ -22,3 +30,35 @@ export const REFRESH_TOKEN = {
         } as CookieOptions,
     },
 }
+
+export const FILE_SIZE = {
+    maxSize: Number(process.env.MAXFILE_SIZE) || 10e6,
+    minSize: Number(process.env.MINFILE_SIZE) || 2e3
+}
+
+export const doubleCsrfUtilities: DoubleCsrfConfigOptions = {
+    getSecret: () => process.env.CSRF_SECRET || '___Secret___',
+    getSessionIdentifier: (req: AuthRequest) => {
+        return req.user?._id?.toString() || req.ip || 'anonymous'
+    },
+    cookieName: process.env.CSRF_COOKIE_NAME || '__Host-larek.x-csrf-token',
+    cookieOptions: {
+        sameSite: 'strict',
+        path: '/',
+        secure: process.env.CSRF_COOKIE_IS_SECURE ? process.env.CSRF_COOKIE_IS_SECURE.toUpperCase() === 'TRUE'
+            : true,
+    }
+}
+
+export const allowedOrigins =
+    process.env.ALLOWED_ORIGINS
+        ? process.env.ALLOWED_ORIGINS.split(',')
+        : process.env.ORIGIN_ALLOW || 'http://localhost'
+
+export const limitSettings = rateLimit ({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: 'Защита от спама. Попробуйте позже.',
+    standardHeaders: true,
+    legacyHeaders: false
+})
