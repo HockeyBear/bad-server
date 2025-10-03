@@ -16,7 +16,7 @@ router.use('/auth', authRouter)
 router.use('/product', productRouter, scrfProtection)
 router.use('/order', auth, orderRouter)
 router.use('/upload', auth, uploadRouter)
-router.use('/customers', auth, customerRouter, scrfProtection, roleGuardMiddleware(Role.Admin))
+router.use('/customers', auth, roleGuardMiddleware(Role.Admin), customerRouter, scrfProtection)
 
 router.use((_req: Request, _res: Response, next: NextFunction) => {
     next(new NotFoundError('Маршрут не найден'))

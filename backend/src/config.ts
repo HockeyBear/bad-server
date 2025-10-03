@@ -57,7 +57,7 @@ export const allowedOrigins =
 
 export const limitSettings = rateLimit ({
     windowMs: 15 * 60 * 1000,
-    max: 100,
+    max: 5,
     message: 'Защита от спама. Попробуйте позже.',
     standardHeaders: true,
     legacyHeaders: false

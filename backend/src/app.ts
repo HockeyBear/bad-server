@@ -20,7 +20,7 @@ const corsOptions = {
 
 // const logger = winston.createLogger
 
-app.use(limitSettings)
+// app.use(limitSettings)
 
 app.use(cors(corsOptions))
 // app.use(cors({ origin: ORIGIN_ALLOW, credentials: true }));

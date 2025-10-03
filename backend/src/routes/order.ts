@@ -16,7 +16,7 @@ import { scrfProtection } from '../middlewares/csrfProtect'
 const orderRouter = Router()
 
 orderRouter.post('/', auth, validateOrderBody, createOrder)
-orderRouter.get('/all', auth, getOrders, roleGuardMiddleware(Role.Admin))
+orderRouter.get('/all', auth, roleGuardMiddleware(Role.Admin), getOrders)
 orderRouter.get('/all/me', auth, getOrdersCurrentUser)
 orderRouter.get(
     '/:orderNumber',
@@ -27,10 +27,10 @@ orderRouter.get(
 orderRouter.get('/me/:orderNumber', auth, getOrderCurrentUserByNumber)
 orderRouter.patch(
     '/:orderNumber',
+    scrfProtection,
     auth,
     roleGuardMiddleware(Role.Admin),
-    updateOrder,
-    scrfProtection
+    updateOrder
 )
 
 orderRouter.delete('/:id', auth, roleGuardMiddleware(Role.Admin), deleteOrder)
