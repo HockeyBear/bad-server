@@ -312,11 +312,9 @@ export const createOrder = async (
         const { address, payment, phone, total, email, items, comment } =
             req.body
 
-            if (phone && !validator.isMobilePhone(phone)) {
-                throw new BadRequestError(
-                    'Invalid mobile number'
-                )
-            }
+            // if (phone && !validator.isMobilePhone(phone)) {
+            //     throw new BadRequestError('Номер не валиден')
+            // }
             
         items.forEach((id: Types.ObjectId) => {
             const product = products.find((p) => p._id.equals(id))
