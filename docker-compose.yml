@@ -5,7 +5,7 @@ services:
     env_file:
       - frontend/.env
     volumes:
-      - frontend:/app/frontend/dist
+      - frontend:/dist
 
   mongo:
     image: mongo

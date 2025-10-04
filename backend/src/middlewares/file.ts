@@ -1,9 +1,21 @@
 import { Request, Express } from 'express'
 import multer, { FileFilterCallback } from 'multer'
-import { join } from 'path'
+import { extname, join } from 'path'
+import { v4 as uuidv4 } from 'uuid'
+import fs from 'fs'
+import { FILE_SIZE } from '../config'
 
 type DestinationCallback = (error: Error | null, destination: string) => void
 type FileNameCallback = (error: Error | null, filename: string) => void
+
+const temp = join (
+    __dirname,
+    process.env.UPLOAD_PATH_TEMP
+        ? `../public/${process.env.UPLOAD_PATH_TEMP}`
+        : '../public'
+)
+
+fs.mkdirSync(temp, { recursive: true })
 
 const storage = multer.diskStorage({
     destination: (
@@ -11,15 +23,7 @@ const storage = multer.diskStorage({
         _file: Express.Multer.File,
         cb: DestinationCallback
     ) => {
-        cb(
-            null,
-            join(
-                __dirname,
-                process.env.UPLOAD_PATH_TEMP
-                    ? `../public/${process.env.UPLOAD_PATH_TEMP}`
-                    : '../public'
-            )
-        )
+        cb(null, temp)
     },
 
     filename: (
@@ -27,11 +31,11 @@ const storage = multer.diskStorage({
         file: Express.Multer.File,
         cb: FileNameCallback
     ) => {
-        cb(null, file.originalname)
+        cb(null, uuidv4().concat(extname(file.originalname)))
     },
 })
 
-const types = [
+export const typeFiles = [
     'image/png',
     'image/jpg',
     'image/jpeg',
@@ -44,11 +48,11 @@ const fileFilter = (
     file: Express.Multer.File,
     cb: FileFilterCallback
 ) => {
-    if (!types.includes(file.mimetype)) {
+    if (!typeFiles.includes(file.mimetype)) {
         return cb(null, false)
     }
 
     return cb(null, true)
 }
 
-export default multer({ storage, fileFilter })
+export default multer({ storage, fileFilter, limits: { fileSize: FILE_SIZE.maxSize} })
