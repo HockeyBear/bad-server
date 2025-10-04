@@ -11,6 +11,7 @@ import serveStatic from './middlewares/serverStatic'
 import routes from './routes'
 import winston, { level } from 'winston'
 import mongoSanitize from 'express-mongo-sanitize'
+import { sanitizeBody } from './middlewares/sanitizeBody'
 
 const { PORT = 3000 } = process.env
 const app = express()
@@ -35,9 +36,6 @@ const logger =  winston.createLogger({
 })
 
 app.use(cors(corsOptions))
-// app.use(cors({ origin: ORIGIN_ALLOW, credentials: true }));
-// app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(serveStatic(path.join(__dirname, 'public')))
 
 app.use((req: Request, _res: Response, next: NextFunction) => {
@@ -52,7 +50,7 @@ app.use((err: Error, _req: Request, _res: Response, next: NextFunction) => {
 app.use(urlencoded({ extended: true, limit: '10kb' }))
 app.use(json({ limit: '10kb' }))
 
-// app.options('*', cors())
+app.use(sanitizeBody)
 app.use(cookieParser())
 app.use(mongoSanitize({ replaceWith: '_' }))
 app.use(routes)
