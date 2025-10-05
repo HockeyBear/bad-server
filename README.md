@@ -1,6 +1,6 @@
 # Проектная работа "WebLarek. Плохой сервер.", спринт 17
 
-[Ссылка на репозиторий](https://github.com/HockeyBear/bad-server)
+https://github.com/HockeyBear/bad-server
 29 когорта, Фулстек-разработчик
 
 ## Подготовка к работе
